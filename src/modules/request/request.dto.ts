@@ -12,6 +12,10 @@ export const updateRequestStatusSchema = Joi.object({
     status: Joi.string().valid("APPROVED", "REJECTED", "IN_PROGRESS", "COMPLETED", "CANCELLED").required(),
 });
 
+export const assignRequestSchema = Joi.object({
+    warehouseId: Joi.string().uuid().required(),
+});
+
 export interface CreateRequestInput {
     clinicId: string;
     medicationId: string;
@@ -21,4 +25,8 @@ export interface CreateRequestInput {
 
 export interface UpdateRequestStatusInput {
     status: RequestStatus;
+}
+
+export interface AssignRequestInput {
+    warehouseId: string;
 }

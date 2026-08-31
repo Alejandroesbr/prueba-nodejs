@@ -3,7 +3,7 @@ import { authenticate } from "../../core/middlewares/auth.middleware";
 import { authorizeRoles } from "../../core/middlewares/role.middleware";
 import { validateMiddleware } from "../../core/middlewares/validate.middleware";
 import { requestController } from "./request.controller";
-import { createRequestSchema, updateRequestStatusSchema } from "./request.dto";
+import { assignRequestSchema, createRequestSchema, updateRequestStatusSchema } from "./request.dto";
 
 const router = Router();
 const authenticatedRoles = [authenticate, authorizeRoles(["ADMIN", "REQUEST_MANAGER"])] as const;
@@ -108,6 +108,42 @@ router.post(
     ...authenticatedRoles,
     validateMiddleware(createRequestSchema),
     requestController.create.bind(requestController),
+);
+/**
+ * @swagger
+ * /api/v1/requests/{id}/assign:
+ *   patch:
+ *     summary: Assign a pending request to a warehouse and transfer its reservation
+ *     tags: [Requests]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [warehouseId]
+ *             properties:
+ *               warehouseId: { type: string, format: uuid }
+ *     responses:
+ *       200: { description: Request assigned and inventory reservation transferred }
+ *       400: { description: Invalid state or insufficient inventory }
+ *       401: { description: Missing or invalid JWT }
+ *       403: { description: User is not an administrator }
+ *       404: { description: Request or warehouse not found }
+ */
+router.patch(
+    "/:id/assign",
+    authenticate,
+    authorizeRoles(["ADMIN"]),
+    validateMiddleware(assignRequestSchema),
+    requestController.assign.bind(requestController),
 );
 /**
  * @swagger

@@ -50,6 +50,14 @@ export class RequestController {
         }
     }
 
+    public async assign(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            res.status(200).json({ success: true, data: await requestService.assign(req.params.id, req.body) });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public async remove(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             await requestService.remove(req.params.id);
