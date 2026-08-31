@@ -68,3 +68,7 @@ docker-data/
 #docker
 
 dockerfile
+
+api-riwimedicare/
+coverage/
+dist/
