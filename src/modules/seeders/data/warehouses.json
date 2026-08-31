@@ -1,0 +1,12 @@
+[
+    {
+        "id": "d3b07384-d113-4ec2-a25e-336c091324a1",
+        "name": "North warehouses",
+        "location": "Industrial warehouse 4"
+    },
+    {
+        "id": "e9c18208-c770-4fd1-a4dc-3af0fd273633",
+        "name": "Central warehouses",
+        "location": "Central city"
+    }
+]

@@ -1,0 +1,4 @@
+[
+    { "name": "ADMIN", "description": "Infrastructure Administrator" },
+    { "name": "REQUEST_MANAGER", "description": "Manages medication supply requests" }
+]
