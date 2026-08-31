@@ -1,4 +1,4 @@
-// \Users\alejandro\developer\prueba-nodejs\src\core\config\env.config.ts
+// /home/Coder/prueba-nodejs/api-riwimedicare/src/core/config/env.config.ts
 
 // Centralize process.env
 

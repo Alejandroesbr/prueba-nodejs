@@ -2,7 +2,7 @@
 
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "../errors/custom.error";
-import { JwtPayload, VerifyToken } from "../utils/jwt.util";
+import { JwtPayload, verifyToken } from "../utils/jwt.util";
 
 /**
  * DECLARATION MERGING (Global Type Extension)
@@ -40,7 +40,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
         // 3. Isolate the chain token, we cut the 7 first characters
         const token = authHeader.substring(7);
         // 4. if the firm is not valid or expire, jwt.util throw a sync error
-        const decodedPayload = VerifyToken(token);
+        const decodedPayload = verifyToken(token);
         // 5. Join the payload to req.user (save in the memory session)
         req.user = decodedPayload;
         // 6. give the control to the next middleware or controller

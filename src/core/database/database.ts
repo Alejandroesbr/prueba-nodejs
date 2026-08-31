@@ -1,4 +1,4 @@
-// /home/Cdeor / prueba - nodejs / api - riwimedicare / src / core / database / database.ts;
+// /home/Coder / prueba - nodejs / api - riwimedicare / src / core / database / database.ts;
 
 // Connect PostgreSQL
 

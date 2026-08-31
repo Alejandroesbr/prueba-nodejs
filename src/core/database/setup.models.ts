@@ -4,8 +4,13 @@ import { ENV } from "../config/env.config";
 import { sequelize } from "./database";
 
 // Import models from role and user
+import Clinic from "../../modules/clinic/clinic.model";
+import Inventory from "../../modules/inventory/inventory.model";
+import Medication from "../../modules/medication/medication.model";
+import SupplyRequest from "../../modules/request/request.model";
 import Role from "../../modules/role/role.model";
 import User from "../../modules/user/user.model";
+import Warehouse from "../../modules/warehouse/warehouse.model";
 
 // Import Seeders from role
 import { seedRoles } from "../../modules/role/role.seeder";
@@ -28,6 +33,17 @@ export const setupDatabase = async (): Promise<void> => {
             as: "role",
         });
 
+        Warehouse.hasMany(Inventory, { foreignKey: "warehouseId", as: "inventory" });
+        Inventory.belongsTo(Warehouse, { foreignKey: "warehouseId", as: "warehouse" });
+        Medication.hasMany(Inventory, { foreignKey: "medicationId", as: "inventory" });
+        Inventory.belongsTo(Medication, { foreignKey: "medicationId", as: "medication" });
+        Clinic.hasMany(SupplyRequest, { foreignKey: "clinicId", as: "requests" });
+        SupplyRequest.belongsTo(Clinic, { foreignKey: "clinicId", as: "clinic" });
+        Medication.hasMany(SupplyRequest, { foreignKey: "medicationId", as: "requests" });
+        SupplyRequest.belongsTo(Medication, { foreignKey: "medicationId", as: "medication" });
+        Warehouse.hasMany(SupplyRequest, { foreignKey: "warehouseId", as: "requests" });
+        SupplyRequest.belongsTo(Warehouse, { foreignKey: "warehouseId", as: "warehouse" });
+
         // SYNCHRONIZATION WITH POSTGRESQL (CREATE TABLE IF NOT EXISTS)
 
         const isDevelopment = ENV.NODE_ENV === "development";
@@ -39,7 +55,7 @@ export const setupDatabase = async (): Promise<void> => {
         // Ensure that the physical tables exist before inserting the master records.
         await seedRoles();
     } catch (error) {
-        console.error("[Database]: Error crítico al sincronizar los modelos:", error);
+        console.error("[Database]: Critical error while synchronizing models:", error);
         // We use Fail-Fast, if the tables cannot be created, the API must not start.
         process.exit(1);
     }

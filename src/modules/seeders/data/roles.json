@@ -1,0 +1,4 @@
+[
+    { "name": "Admin", "description": "Access to the system" },
+    { "name": "Request manager", "description": "Only manage requests" }
+]
