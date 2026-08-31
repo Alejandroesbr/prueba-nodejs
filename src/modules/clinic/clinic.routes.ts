@@ -6,9 +6,10 @@ import { clinicController } from "./clinic.controller";
 import { createClinicSchema, updateClinicSchema } from "./clinic.dto";
 
 const router = Router();
-const adminOnly = [authenticate, authorizeRoles(["ADMIN"])] as const;
+const adminOnly = authorizeRoles(["ADMIN"]);
+const authenticatedUsers = authorizeRoles(["ADMIN", "REQUEST_MANAGER"]);
 
-router.use(...adminOnly);
+router.use(authenticate);
 
 /**
  * @swagger
@@ -69,8 +70,8 @@ router.use(...adminOnly);
  *       401: { description: Missing or invalid JWT }
  *       403: { description: User is not an administrator }
  */
-router.post("/", validateMiddleware(createClinicSchema), clinicController.create.bind(clinicController));
-router.get("/", clinicController.findAll.bind(clinicController));
+router.post("/", adminOnly, validateMiddleware(createClinicSchema), clinicController.create.bind(clinicController));
+router.get("/", authenticatedUsers, clinicController.findAll.bind(clinicController));
 
 /**
  * @swagger
@@ -143,8 +144,8 @@ router.get("/", clinicController.findAll.bind(clinicController));
  *       403: { description: User is not an administrator }
  *       404: { description: Clinic not found }
  */
-router.get("/:id", clinicController.findById.bind(clinicController));
-router.patch("/:id", validateMiddleware(updateClinicSchema), clinicController.update.bind(clinicController));
-router.delete("/:id", clinicController.remove.bind(clinicController));
+router.get("/:id", authenticatedUsers, clinicController.findById.bind(clinicController));
+router.patch("/:id", adminOnly, validateMiddleware(updateClinicSchema), clinicController.update.bind(clinicController));
+router.delete("/:id", adminOnly, clinicController.remove.bind(clinicController));
 
 export default router;

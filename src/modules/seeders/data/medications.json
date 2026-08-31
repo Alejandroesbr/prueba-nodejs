@@ -1,4 +1,11 @@
 [
-    { "name": "Paracetamol 500mg", "description": "Common pain reliever" },
-    { "name": "Amoxicilina 250mg", "description": "Broad-spectrum antibiotic" }
+    {
+        "id": "8f8e0273-e8b7-4ca1-a8ec-aed30b5da249",
+        "name": "Paracetamol 500mg",
+        "description": "Common pain reliever"
+    },
+    {
+        "name": "Amoxicilina 250mg",
+        "description": "Broad-spectrum antibiotic"
+    }
 ]

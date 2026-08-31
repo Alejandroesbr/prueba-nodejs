@@ -46,5 +46,19 @@ export const verifyToken = (token: string): JwtPayload => {
 
     const decoded = jwt.verify(token, ENV.JWT_SECRET, options);
 
-    return decoded as JwtPayload;
+    if (!isJwtPayload(decoded)) {
+        throw new jwt.JsonWebTokenError("Invalid JWT payload");
+    }
+
+    return decoded;
+};
+
+const isJwtPayload = (payload: string | jwt.JwtPayload): payload is JwtPayload => {
+    return (
+        typeof payload !== "string" &&
+        typeof payload.userId === "string" &&
+        payload.userId.length > 0 &&
+        typeof payload.roleName === "string" &&
+        (payload.roleName === "ADMIN" || payload.roleName === "REQUEST_MANAGER")
+    );
 };

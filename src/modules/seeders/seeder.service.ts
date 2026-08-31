@@ -116,9 +116,14 @@ export class SeederService {
     private async seedWarehouses(rows: JsonRecord[] | undefined, transaction: Transaction): Promise<number> {
         if (!rows) return 0;
         for (const row of rows) {
-            const data = { name: this.requiredString(row, "name"), location: this.requiredString(row, "location") };
+            const data = {
+                id: this.optionalUuid(row, "id"),
+                name: this.requiredString(row, "name"),
+                location: this.requiredString(row, "location"),
+            };
             const warehouse = await Warehouse.findOne({ where: { name: data.name }, transaction });
-            if (warehouse) await warehouse.update({ ...data, status: "ACTIVE" }, { transaction });
+            if (warehouse)
+                await warehouse.update({ name: data.name, location: data.location, status: "ACTIVE" }, { transaction });
             else await Warehouse.create(data, { transaction });
         }
         return rows.length;
@@ -128,11 +133,16 @@ export class SeederService {
         if (!rows) return 0;
         for (const row of rows) {
             const data = {
+                id: this.optionalUuid(row, "id"),
                 name: this.requiredString(row, "name"),
                 description: this.optionalString(row, "description"),
             };
             const medication = await Medication.findOne({ where: { name: data.name }, transaction });
-            if (medication) await medication.update({ ...data, status: "ACTIVE" }, { transaction });
+            if (medication)
+                await medication.update(
+                    { name: data.name, description: data.description, status: "ACTIVE" },
+                    { transaction },
+                );
             else await Medication.create(data, { transaction });
         }
         return rows.length;
@@ -191,6 +201,18 @@ export class SeederService {
         const value = row[field];
         if (typeof value !== "number" || !Number.isInteger(value) || value < minimum) {
             throw new BadRequestError(`${field} must be an integer greater than or equal to ${minimum}`);
+        }
+        return value;
+    }
+
+    private optionalUuid(row: JsonRecord, field: string): string | undefined {
+        const value = row[field];
+        if (value === undefined || value === null || value === "") return undefined;
+        if (
+            typeof value !== "string" ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+        ) {
+            throw new BadRequestError(`${field} must be a valid UUID`);
         }
         return value;
     }

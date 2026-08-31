@@ -6,7 +6,9 @@ import { inventoryController } from "./inventory.controller";
 import { createInventorySchema, updateInventorySchema } from "./inventory.dto";
 
 const router = Router();
-router.use(authenticate, authorizeRoles(["ADMIN"]));
+const adminOnly = authorizeRoles(["ADMIN"]);
+const authenticatedUsers = authorizeRoles(["ADMIN", "REQUEST_MANAGER"]);
+router.use(authenticate);
 
 /**
  * @swagger
@@ -44,8 +46,13 @@ router.use(authenticate, authorizeRoles(["ADMIN"]));
  *       401: { description: Missing or invalid JWT }
  *       403: { description: User is not an administrator }
  */
-router.post("/", validateMiddleware(createInventorySchema), inventoryController.create.bind(inventoryController));
-router.get("/", inventoryController.findAll.bind(inventoryController));
+router.post(
+    "/",
+    adminOnly,
+    validateMiddleware(createInventorySchema),
+    inventoryController.create.bind(inventoryController),
+);
+router.get("/", authenticatedUsers, inventoryController.findAll.bind(inventoryController));
 
 /**
  * @swagger
@@ -94,8 +101,13 @@ router.get("/", inventoryController.findAll.bind(inventoryController));
  *       204: { description: Inventory deleted }
  *       404: { description: Inventory not found }
  */
-router.get("/:id", inventoryController.findById.bind(inventoryController));
-router.patch("/:id", validateMiddleware(updateInventorySchema), inventoryController.update.bind(inventoryController));
-router.delete("/:id", inventoryController.remove.bind(inventoryController));
+router.get("/:id", authenticatedUsers, inventoryController.findById.bind(inventoryController));
+router.patch(
+    "/:id",
+    adminOnly,
+    validateMiddleware(updateInventorySchema),
+    inventoryController.update.bind(inventoryController),
+);
+router.delete("/:id", adminOnly, inventoryController.remove.bind(inventoryController));
 
 export default router;

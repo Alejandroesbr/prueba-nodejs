@@ -6,7 +6,9 @@ import { warehouseController } from "./warehouse.controller";
 import { createWarehouseSchema, updateWarehouseSchema } from "./warehouse.dto";
 
 const router = Router();
-router.use(authenticate, authorizeRoles(["ADMIN"]));
+const adminOnly = authorizeRoles(["ADMIN"]);
+const authenticatedUsers = authorizeRoles(["ADMIN", "REQUEST_MANAGER"]);
+router.use(authenticate);
 
 /**
  * @swagger
@@ -61,8 +63,13 @@ router.use(authenticate, authorizeRoles(["ADMIN"]));
  *       401: { description: Missing or invalid JWT }
  *       403: { description: User is not an administrator }
  */
-router.post("/", validateMiddleware(createWarehouseSchema), warehouseController.create.bind(warehouseController));
-router.get("/", warehouseController.findAll.bind(warehouseController));
+router.post(
+    "/",
+    adminOnly,
+    validateMiddleware(createWarehouseSchema),
+    warehouseController.create.bind(warehouseController),
+);
+router.get("/", authenticatedUsers, warehouseController.findAll.bind(warehouseController));
 
 /**
  * @swagger
@@ -133,8 +140,13 @@ router.get("/", warehouseController.findAll.bind(warehouseController));
  *       403: { description: User is not an administrator }
  *       404: { description: Warehouse not found }
  */
-router.get("/:id", warehouseController.findById.bind(warehouseController));
-router.patch("/:id", validateMiddleware(updateWarehouseSchema), warehouseController.update.bind(warehouseController));
-router.delete("/:id", warehouseController.remove.bind(warehouseController));
+router.get("/:id", authenticatedUsers, warehouseController.findById.bind(warehouseController));
+router.patch(
+    "/:id",
+    adminOnly,
+    validateMiddleware(updateWarehouseSchema),
+    warehouseController.update.bind(warehouseController),
+);
+router.delete("/:id", adminOnly, warehouseController.remove.bind(warehouseController));
 
 export default router;

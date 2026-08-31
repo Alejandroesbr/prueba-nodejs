@@ -6,7 +6,9 @@ import { medicationController } from "./medication.controller";
 import { createMedicationSchema, updateMedicationSchema } from "./medication.dto";
 
 const router = Router();
-router.use(authenticate, authorizeRoles(["ADMIN"]));
+const adminOnly = authorizeRoles(["ADMIN"]);
+const authenticatedUsers = authorizeRoles(["ADMIN", "REQUEST_MANAGER"]);
+router.use(authenticate);
 
 /**
  * @swagger
@@ -61,8 +63,13 @@ router.use(authenticate, authorizeRoles(["ADMIN"]));
  *       401: { description: Missing or invalid JWT }
  *       403: { description: User is not an administrator }
  */
-router.post("/", validateMiddleware(createMedicationSchema), medicationController.create.bind(medicationController));
-router.get("/", medicationController.findAll.bind(medicationController));
+router.post(
+    "/",
+    authenticatedUsers,
+    validateMiddleware(createMedicationSchema),
+    medicationController.create.bind(medicationController),
+);
+router.get("/", authenticatedUsers, medicationController.findAll.bind(medicationController));
 
 /**
  * @swagger
@@ -133,12 +140,13 @@ router.get("/", medicationController.findAll.bind(medicationController));
  *       403: { description: User is not an administrator }
  *       404: { description: Medication not found }
  */
-router.get("/:id", medicationController.findById.bind(medicationController));
+router.get("/:id", authenticatedUsers, medicationController.findById.bind(medicationController));
 router.patch(
     "/:id",
+    authenticatedUsers,
     validateMiddleware(updateMedicationSchema),
     medicationController.update.bind(medicationController),
 );
-router.delete("/:id", medicationController.remove.bind(medicationController));
+router.delete("/:id", adminOnly, medicationController.remove.bind(medicationController));
 
 export default router;
