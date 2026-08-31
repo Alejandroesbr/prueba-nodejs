@@ -13,7 +13,7 @@ import Warehouse from "../../modules/warehouse/warehouse.model";
  */
 const seedTable = async (Model: any, fileName: string, tableName: string) => {
     try {
-        const filePath = path.resolve(process.cwd(), "seeders", "data", fileName);
+        const filePath = path.resolve(__dirname, "../../modules/seeders/data", fileName);
 
         if (!fs.existsSync(filePath)) {
             console.warn(`[Seeder]: Files ${fileName} Not found. Skipping...`);
