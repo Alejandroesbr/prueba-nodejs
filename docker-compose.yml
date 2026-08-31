@@ -1,47 +1,47 @@
 name: backend-modular-layered
 
 services:
-  # Layer 1 y 2: API & LOGIC
-  api-backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: bk_node_app
-    ports:
-      - "${PORT}:${PORT}" # User .env
-    env_file:
-      - .env              
-    environment:
-      - DB_HOST=db        # Overwrite LOCALHOST using the name of the db from docker
-      - DB_PORT=5432      # Net from docker, Postgres use the port 5432
-    networks:
-      - red-app
-    depends_on:
-      db:
-        condition: service_healthy
+    # Layer 1 y 2: API & BUSINESS LOGIC
+    api-backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: bk_node_app
+        ports:
+            - "${PORT}:${PORT}" 
+        env_file:
+            - .env 
+        environment:
+            - DB_HOST=db # Replace “LOCALHOST” with the name of the database service in Docker
+            - DB_PORT=5432 #  Internally within the Docker network, Postgres listens on port 5432
+        networks:
+            - red-app
+        depends_on:
+            db:
+                condition: service_healthy
 
-  # CAPA 3: Data access (PostgreSQL)
-  db:
-    image: postgres:16-alpine
-    container_name: bk_db_repository
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "${DB_PORT}:5432" # Mapping the local port 5434 to 5432 in the container
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - red-app
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    # Layer 3: DATA ACCESS (PostgreSQL)
+    db:
+        image: postgres:16-alpine
+        container_name: bk_db_repository
+        environment:
+            - POSTGRES_USER=${DB_USER}
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - POSTGRES_DB=${DB_NAME}
+        ports:
+            - "${DB_PORT}:5432" # Mapping the local port 5434 to container internal port 5432
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - red-app
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
 volumes:
-  postgres_data:
+    postgres_data:
 
 networks:
-  red-app:
+    red-app:
