@@ -1,0 +1,12 @@
+[
+    {
+        "warehouseId": "d3b07384-d113-4ec2-a25e-336c091324a1",
+        "medicationId": "8f8e0273-e8b7-4ca1-a8ec-aed30b5da249",
+        "quantity": 150
+    },
+    {
+        "warehouseId": "e9c18208-c770-4fd1-a4dc-3af0fd273633",
+        "medicationId": "8f8e0273-e8b7-4ca1-a8ec-aed30b5da249",
+        "quantity": 0
+    }
+]
