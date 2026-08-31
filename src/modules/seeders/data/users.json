@@ -1,0 +1,12 @@
+[
+    {
+        "email": "admin@riwimedicare.com",
+        "password": "Password123!",
+        "roleName": "ADMIN"
+    },
+    {
+        "email": "gestor.medellin@riwimedicare.com",
+        "password": "Password123!",
+        "roleName": "REQUEST_MANAGER"
+    }
+]

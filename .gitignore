@@ -1,1 +1,70 @@
+
+# 1. Dependecies
+
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# 2. Compile files by TS
+
+dist/
+build/
+*.tsbuildinfo
+
+# 3. enviorioment 
+
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.pem
+!.env.example
+
+# 4.Jest tests
+
+coverage/
+.nyc_output/
+
+# 5. IDEs
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code / JetBrains 
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# 6. Logs 
+
+logs/
+*.log
+*.tmp
+*.temp
+
+# 7. DB
+
+pgdata/
+docker-data/
+
+#docker
+
+dockerfile

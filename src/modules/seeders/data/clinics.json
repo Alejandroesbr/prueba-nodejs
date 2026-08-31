@@ -1,0 +1,4 @@
+[
+    { "name": "Central Clinic", "nit": "900111222", "managerName": "Dr. House", "managerPhone": "555-1234" },
+    { "name": "South Hospital", "nit": "800333444", "managerName": "Dra. Grey", "managerPhone": "555-5678" }
+]
