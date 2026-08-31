@@ -34,14 +34,6 @@ export class AuthController {
             // The service returns the user's cleaned data and the signed JWT
             const { user, token } = await authService.login(req.body);
 
-            // Cookie Security Settings (httpOnly)
-            res.cookie("jwt", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24,
-            });
-
             res.status(200).json({
                 message: "Login successful",
                 data: {

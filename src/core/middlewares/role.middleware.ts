@@ -11,7 +11,7 @@ import { ForbiddenError, UnauthorizedError } from "../errors/custom.error";
  */
 export const authorizeRoles = (allowedRoles: string[]) => {
     // Returns the standard Express signature (req, res, next)
-    return (req: Request, res: Response, next: NextFunction): void => {
+    return (req: Request, _res: Response, next: NextFunction): void => {
         try {
             // Step 3: Session Check (Ensures that the JWT middleware ran earlier)
             if (!req.user || !req.user.roleName) {

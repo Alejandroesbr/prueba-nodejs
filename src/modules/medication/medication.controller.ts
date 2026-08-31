@@ -11,7 +11,7 @@ export class MedicationController {
         }
     }
 
-    public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+    public async findAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const medications = await medicationService.findAll();
             res.status(200).json({ success: true, data: medications });

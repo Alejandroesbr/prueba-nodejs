@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { warehouseService } from "./warehouse.service";
+import { inventoryService } from "./inventory.service";
 
-export class WarehouseController {
+export class InventoryController {
     public async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const warehouse = await warehouseService.create(req.body);
-            res.status(201).json({ success: true, data: warehouse });
+            res.status(201).json({ success: true, data: await inventoryService.create(req.body) });
         } catch (error) {
             next(error);
         }
@@ -13,8 +12,7 @@ export class WarehouseController {
 
     public async findAll(_req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const warehouses = await warehouseService.findAll();
-            res.status(200).json({ success: true, data: warehouses });
+            res.status(200).json({ success: true, data: await inventoryService.findAll() });
         } catch (error) {
             next(error);
         }
@@ -22,8 +20,7 @@ export class WarehouseController {
 
     public async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const warehouse = await warehouseService.findById(req.params.id);
-            res.status(200).json({ success: true, data: warehouse });
+            res.status(200).json({ success: true, data: await inventoryService.findById(req.params.id) });
         } catch (error) {
             next(error);
         }
@@ -31,8 +28,7 @@ export class WarehouseController {
 
     public async update(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const warehouse = await warehouseService.update(req.params.id, req.body);
-            res.status(200).json({ success: true, data: warehouse });
+            res.status(200).json({ success: true, data: await inventoryService.update(req.params.id, req.body) });
         } catch (error) {
             next(error);
         }
@@ -40,7 +36,7 @@ export class WarehouseController {
 
     public async remove(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            await warehouseService.remove(req.params.id);
+            await inventoryService.remove(req.params.id);
             res.status(204).send();
         } catch (error) {
             next(error);
@@ -48,4 +44,4 @@ export class WarehouseController {
     }
 }
 
-export const warehouseController = new WarehouseController();
+export const inventoryController = new InventoryController();

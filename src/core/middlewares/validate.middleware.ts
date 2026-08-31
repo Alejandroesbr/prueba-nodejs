@@ -30,7 +30,7 @@ const joiValidationOptions: ValidationOptions = {
  * @returns Standard Express middleware (req, res, next).
  */
 export const validateMiddleware = (schema: ObjectSchema) => {
-    return (req: Request, res: Response, next: NextFunction): void => {
+    return (req: Request, _res: Response, next: NextFunction): void => {
         // Validates the request body against the Joi schema
         const { error, value } = schema.validate(req.body, joiValidationOptions);
 

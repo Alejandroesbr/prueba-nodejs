@@ -2,6 +2,9 @@
 
 import Joi from "joi";
 
+export const userRoleNames = ["ADMIN", "REQUEST_MANAGER"] as const;
+export type UserRoleName = (typeof userRoleNames)[number];
+
 /**
  * registerSchema
  *
@@ -25,10 +28,14 @@ export const registerSchema = Joi.object({
             "any.required": "The password is a required field.",
         }),
 
-    roleName: Joi.string().required().messages({
-        "any.required": "The roleName is a required field.",
-        "string.empty": "The roleName cannot be empty.",
-    }),
+    roleName: Joi.string()
+        .valid(...userRoleNames)
+        .required()
+        .messages({
+            "any.required": "The roleName is a required field.",
+            "string.empty": "The roleName cannot be empty.",
+            "any.only": "The roleName must be ADMIN or REQUEST_MANAGER.",
+        }),
 });
 
 /**

@@ -26,7 +26,7 @@ declare global {
  * a valid JWT in the headers before allowing access to protected routes.
  */
 
-export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticate = (req: Request, _res: Response, next: NextFunction): void => {
     try {
         // 1. Read the header
         const authHeader = req.headers.authorization;

@@ -16,6 +16,9 @@ const swaggerOptions: Options = {
             { name: "Clinics", description: "Clinic and responsible-person management" },
             { name: "Warehouses", description: "Warehouse management" },
             { name: "Medications", description: "Medication catalogue management" },
+            { name: "Inventory", description: "Medication stock per warehouse" },
+            { name: "Requests", description: "Medication supply requests and status tracking" },
+            { name: "Seeders", description: "Transactional bulk loading of base JSON data" },
         ],
         servers: [
             {
@@ -58,6 +61,40 @@ const swaggerOptions: Options = {
                         status: { type: "string", enum: ["ACTIVE", "DELETED"], example: "ACTIVE" },
                         createdAt: { type: "string", format: "date-time" },
                         updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                Inventory: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        warehouseId: { type: "string", format: "uuid" },
+                        medicationId: { type: "string", format: "uuid" },
+                        quantity: { type: "integer", minimum: 0, example: 100 },
+                        status: { type: "string", enum: ["ACTIVE", "DELETED"], example: "ACTIVE" },
+                    },
+                },
+                SupplyRequest: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        clinicId: { type: "string", format: "uuid" },
+                        medicationId: { type: "string", format: "uuid" },
+                        warehouseId: { type: "string", format: "uuid" },
+                        quantity: { type: "integer", minimum: 1, example: 10 },
+                        status: {
+                            type: "string",
+                            enum: [
+                                "PENDING",
+                                "ASSIGNED",
+                                "APPROVED",
+                                "IN_PROGRESS",
+                                "REJECTED",
+                                "COMPLETED",
+                                "CANCELLED",
+                                "DELETED",
+                            ],
+                            example: "PENDING",
+                        },
                     },
                 },
                 User: {

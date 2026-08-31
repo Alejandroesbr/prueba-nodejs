@@ -11,23 +11,18 @@ import Warehouse from "../../modules/warehouse/warehouse.model";
 /**
  * Generic function to read a JSON file and insert it into the corresponding model.
  */
-const seedTable = async (Model: any, fileName: string, tableName: string) => {
-    try {
-        const filePath = path.resolve(__dirname, "../../modules/seeders/data", fileName);
+const seedTable = async (Model: any, fileName: string, tableName: string): Promise<void> => {
+    const filePath = path.resolve(__dirname, "../../modules/seeders/data", fileName);
 
-        if (!fs.existsSync(filePath)) {
-            console.warn(`[Seeder]: Files ${fileName} Not found. Skipping...`);
-            return;
-        }
-
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        const data = JSON.parse(fileContent);
-
-        await Model.bulkCreate(data, { ignoreDuplicates: true });
-        console.log(`[Seeder]: -> ${data.length} records inserted into ${tableName}.`);
-    } catch (error) {
-        console.error(`[Seeder]: Error inserting into ${tableName}:`, error);
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`[Seeder]: File ${fileName} not found`);
     }
+
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    const data = JSON.parse(fileContent);
+
+    await Model.bulkCreate(data, { ignoreDuplicates: true });
+    console.log(`[Seeder]: -> ${data.length} records inserted into ${tableName}.`);
 };
 
 /**
@@ -50,4 +45,8 @@ const runAllSeeders = async () => {
     process.exit(0);
 };
 
-runAllSeeders();
+runAllSeeders().catch(async error => {
+    console.error("[Seeder]: Process failed", error);
+    await sequelize.close();
+    process.exitCode = 1;
+});

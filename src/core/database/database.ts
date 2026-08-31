@@ -40,5 +40,6 @@ export const connectDB = async (): Promise<void> => {
         );
     } catch (error) {
         console.error("[Database]: Critical error connecting to the database:", error);
+        throw error;
     }
 };

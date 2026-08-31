@@ -11,6 +11,7 @@ interface ErrorResponse {
     success: boolean;
     message: string;
     code: string;
+    details?: unknown;
     stack?: string;
 }
 
@@ -24,7 +25,7 @@ export const errorMiddleware: ErrorRequestHandler = (
     req: Request,
     res: Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    next: NextFunction,
+    _next: NextFunction,
 ): void => {
     // 1. Handling Default Values (Unhandled Exceptions -> 500 Internal Error)
     let statusCode = 500;
@@ -51,12 +52,14 @@ export const errorMiddleware: ErrorRequestHandler = (
 
     // 3. Building the Response Based on the Environment (Development vs. Production)
     const isDevelopment = ENV.NODE_ENV === "development";
+    const errorDetails = (err as Error & { details?: unknown }).details;
 
     const responseBody: ErrorResponse = {
         success: false,
         // In production, unhandled native 500 error messages are hidden
         message: isDevelopment ? err.message : statusCode === 500 ? "An internal server error has occurred" : message,
         code: errorCode,
+        ...(errorDetails ? { details: errorDetails } : {}),
         // The stack trace is displayed ONLY if we are explicitly in a development environment
         ...(isDevelopment && { stack: err.stack }),
     };

@@ -8,6 +8,9 @@ import { errorMiddleware } from "./core/middlewares/error.middleware";
 import authRoutes from "./modules/auth/auth.routes";
 import clinicRoutes from "./modules/clinic/clinic.routes";
 import medicationRoutes from "./modules/medication/medication.routes";
+import inventoryRoutes from "./modules/inventory/inventory.routes";
+import requestRoutes from "./modules/request/request.routes";
+import seederRoutes from "./modules/seeders/seeder.routes";
 import warehouseRoutes from "./modules/warehouse/warehouse.routes";
 
 const app: Application = express();
@@ -30,8 +33,11 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/clinics", clinicRoutes);
 app.use("/api/v1/warehouses", warehouseRoutes);
 app.use("/api/v1/medications", medicationRoutes);
+app.use("/api/v1/inventory", inventoryRoutes);
+app.use("/api/v1/requests", requestRoutes);
+app.use("/api/v1/seeders", seederRoutes);
 
-app.use("*", (req, res, next) => {
+app.use("*", (req, _res, next) => {
     next(new NotFoundError(`La ruta ${req.originalUrl} no existe en este servidor`));
 });
 

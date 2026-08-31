@@ -1,7 +1,15 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../../core/database/database";
 
-export type RequestStatus = "PENDING" | "ASSIGNED" | "APPROVED" | "REJECTED" | "COMPLETED" | "CANCELLED" | "DELETED";
+export type RequestStatus =
+    | "PENDING"
+    | "ASSIGNED"
+    | "APPROVED"
+    | "IN_PROGRESS"
+    | "REJECTED"
+    | "COMPLETED"
+    | "CANCELLED"
+    | "DELETED";
 
 export interface RequestAttributes {
     id: string;
@@ -35,7 +43,16 @@ SupplyRequest.init(
         warehouseId: { type: DataTypes.UUID, allowNull: false },
         quantity: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 1 } },
         status: {
-            type: DataTypes.ENUM("PENDING", "ASSIGNED", "APPROVED", "REJECTED", "COMPLETED", "CANCELLED", "DELETED"),
+            type: DataTypes.ENUM(
+                "PENDING",
+                "ASSIGNED",
+                "APPROVED",
+                "IN_PROGRESS",
+                "REJECTED",
+                "COMPLETED",
+                "CANCELLED",
+                "DELETED",
+            ),
             allowNull: false,
             defaultValue: "PENDING",
         },

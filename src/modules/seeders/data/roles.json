@@ -1,4 +1,4 @@
 [
-    { "name": "Admin", "description": "Access to the system" },
-    { "name": "Request manager", "description": "Only manage requests" }
+    { "name": "ADMIN", "description": "Infrastructure Administrator" },
+    { "name": "REQUEST_MANAGER", "description": "Manages medication supply requests" }
 ]

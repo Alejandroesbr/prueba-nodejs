@@ -7,6 +7,10 @@ export class ClinicService {
     public async create(data: CreateClinicInput): Promise<Clinic> {
         const existingClinic = await Clinic.findOne({ where: { nit: data.nit } });
         if (existingClinic) {
+            if (existingClinic.status === "DELETED") {
+                await existingClinic.update({ ...data, status: "ACTIVE" });
+                return existingClinic;
+            }
             throw new BadRequestError("A clinic with this NIT already exists");
         }
         return Clinic.create(data);

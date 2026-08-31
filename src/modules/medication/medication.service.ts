@@ -7,6 +7,10 @@ export class MedicationService {
     public async create(data: CreateMedicationInput): Promise<Medication> {
         const existingMedication = await Medication.findOne({ where: { name: data.name } });
         if (existingMedication) {
+            if (existingMedication.status === "DELETED") {
+                await existingMedication.update({ ...data, status: "ACTIVE" });
+                return existingMedication;
+            }
             throw new BadRequestError("A medication with this name already exists");
         }
         return Medication.create(data);

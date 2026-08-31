@@ -5,6 +5,7 @@ import { comparePassword, hashPassword } from "../../core/utils/hash.util";
 import { generateToken } from "../../core/utils/jwt.util";
 import Role from "../role/role.model";
 import User from "../user/user.model";
+import { UserRoleName } from "./auth.dto";
 
 interface LoginInput {
     email: string;
@@ -13,7 +14,7 @@ interface LoginInput {
 interface RegisterInput {
     email: string;
     password: string;
-    roleName: string;
+    roleName: UserRoleName;
 }
 
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
         const newUser = await User.create({
             email: data.email,
             passwordHash: hashedPassword,
-            roleId: requestedRole.dataValues.id,
+            roleId: requestedRole.id,
         });
 
         return newUser;
@@ -62,16 +63,16 @@ export class AuthService {
             throw new UnauthorizedError("Invalid credentials");
         }
 
-        const isMatch = await comparePassword(data.password, user.dataValues.passwordHash);
+        const isMatch = await comparePassword(data.password, user.passwordHash);
         if (!isMatch) {
             throw new UnauthorizedError("Invalid credentials");
         }
 
-        const roleEntity = user.get("role") as any;
-        const roleName = roleEntity ? roleEntity.name : "USER";
+        const roleEntity = user.get("role") as Role | null;
+        const roleName = roleEntity?.name as UserRoleName;
 
         const token = generateToken({
-            userId: user.dataValues.id,
+            userId: user.id,
             roleName: roleName,
         });
 

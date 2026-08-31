@@ -28,7 +28,7 @@ Inventory.init(
         id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
         warehouseId: { type: DataTypes.UUID, allowNull: false },
         medicationId: { type: DataTypes.UUID, allowNull: false },
-        quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0, validate: { min: 0 } },
+        quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0, validate: { min: 0, isInt: true } },
         status: { type: DataTypes.ENUM("ACTIVE", "DELETED"), allowNull: false, defaultValue: "ACTIVE" },
     },
     {
