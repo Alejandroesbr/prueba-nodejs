@@ -1,29 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { connectDB, sequelize } from "./database";
-
-// Import Models
-import Clinic from "../../modules/clinic/clinic.model";
-import Medication from "../../modules/medication/medication.model";
-import Role from "../../modules/role/role.model";
-import Warehouse from "../../modules/warehouse/warehouse.model";
-
-/**
- * Generic function to read a JSON file and insert it into the corresponding model.
- */
-const seedTable = async (Model: any, fileName: string, tableName: string): Promise<void> => {
-    const filePath = path.resolve(__dirname, "../../modules/seeders/data", fileName);
-
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`[Seeder]: File ${fileName} not found`);
-    }
-
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const data = JSON.parse(fileContent);
-
-    await Model.bulkCreate(data, { ignoreDuplicates: true });
-    console.log(`[Seeder]: -> ${data.length} records inserted into ${tableName}.`);
-};
+import { SeederService } from "../../modules/seeders/seeder.service";
 
 /**
  * Main Seeder orchestrator.
@@ -34,10 +12,23 @@ const runAllSeeders = async () => {
 
     await connectDB();
 
-    await seedTable(Role, "roles.json", "Roles");
-    await seedTable(Clinic, "clinics.json", "Clinics");
-    await seedTable(Warehouse, "warehouses.json", "Warehouses");
-    await seedTable(Medication, "medications.json", "Medications");
+    const dataDirectory = path.resolve(__dirname, "../../modules/seeders/data");
+    const fileNames = [
+        "roles.json",
+        "users.json",
+        "clinics.json",
+        "warehouses.json",
+        "medications.json",
+        "inventory.json",
+    ];
+    const files = fileNames.map(fileName => ({
+        originalname: fileName,
+        buffer: fs.readFileSync(path.join(dataDirectory, fileName)),
+    }));
+    const result = await new SeederService().load(files);
+    console.log(
+        `[Seeder]: Loaded ${Object.values(result.records).reduce((total, count) => total + count, 0)} records.`,
+    );
 
     console.log("\n[Seeder]: Process successfully completed.");
 
