@@ -7,10 +7,16 @@ const swaggerOptions: Options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Modular Layered API - Performance Test",
+            title: "Riwimedicare Supply API",
             version: "1.0.0",
-            description: "API documentation for the Technical Performance Exam.",
+            description: "REST API for managing clinics, warehouses, medications and supply requests.",
         },
+        tags: [
+            { name: "Authentication", description: "User registration and login operations" },
+            { name: "Clinics", description: "Clinic and responsible-person management" },
+            { name: "Warehouses", description: "Warehouse management" },
+            { name: "Medications", description: "Medication catalogue management" },
+        ],
         servers: [
             {
                 url: `http://localhost:${ENV.PORT}`,
@@ -18,6 +24,59 @@ const swaggerOptions: Options = {
             },
         ],
         components: {
+            schemas: {
+                Clinic: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string", example: "Central Clinic" },
+                        nit: { type: "string", example: "900111222" },
+                        managerName: { type: "string", example: "Dr. House" },
+                        managerPhone: { type: "string", example: "555-1234" },
+                        status: { type: "string", enum: ["ACTIVE", "DELETED"], example: "ACTIVE" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                Warehouse: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string", example: "North warehouse" },
+                        location: { type: "string", example: "Industrial warehouse 4" },
+                        status: { type: "string", enum: ["ACTIVE", "DELETED"], example: "ACTIVE" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                Medication: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string", example: "Paracetamol 500mg" },
+                        description: { type: "string", nullable: true, example: "Common pain reliever" },
+                        status: { type: "string", enum: ["ACTIVE", "DELETED"], example: "ACTIVE" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                User: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        email: { type: "string", format: "email", example: "admin@example.com" },
+                        roleId: { type: "string", format: "uuid" },
+                    },
+                },
+                Error: {
+                    type: "object",
+                    properties: {
+                        success: { type: "boolean", example: false },
+                        message: { type: "string", example: "Resource not found" },
+                        code: { type: "string", example: "NOT_FOUND" },
+                    },
+                },
+            },
             securitySchemes: {
                 bearerAuth: {
                     type: "http",

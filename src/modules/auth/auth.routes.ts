@@ -38,11 +38,21 @@ const router = Router();
  *               password:
  *                 type: string
  *                 example: SecurePass123
+ *               roleName:
+ *                 type: string
+ *                 enum: [ADMIN, REQUEST_MANAGER]
+ *                 example: ADMIN
  *     responses:
  *       201:
  *         description: User registered successfully
- *       400:
- *         description: Validation error or email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: User successfully registered }
+ *                 data: { $ref: '#/components/schemas/User' }
+ *       400: { description: Validation error or email already exists }
  */
 router.post("/register", validateMiddleware(registerSchema), authController.register.bind(authController));
 
@@ -72,9 +82,20 @@ router.post("/register", validateMiddleware(registerSchema), authController.regi
  *                 example: SecurePass123
  *     responses:
  *       200:
- *         description: Login successful, returns JWT
- *       401:
- *         description: Invalid credentials
+ *         description: Login successful and JWT issued
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: Login successful }
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user: { $ref: '#/components/schemas/User' }
+ *                     token: { type: string, example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... }
+ *       400: { description: Validation error }
+ *       401: { description: Invalid credentials }
  */
 router.post("/login", validateMiddleware(loginSchema), authController.login.bind(authController));
 
